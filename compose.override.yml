@@ -1,0 +1,52 @@
+services:
+  proxy:
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./.docker/proxy/data:/data:rw
+
+  mailer:
+    restart: unless-stopped
+    ports:
+      - '1025:1025'
+
+  mariadb:
+    restart: unless-stopped
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./.docker/mariadb/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+      - ./.docker/mariadb/data:/var/lib/mysql:rw
+
+  mysql:
+    restart: unless-stopped
+    ports:
+      - '3307:3306'
+    volumes:
+      - ./.docker/mysql/data:/var/lib/mysql:rw
+      - ./.docker/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+      - ./.docker/mysql/initdb.d/:/docker-entrypoint-initdb.d/:ro
+
+  rabbitmq:
+    build:
+      context: .docker/rabbitmq
+    restart: unless-stopped
+    volumes:
+      - ./.docker/rabbitmq/data:/var/lib/rabbitmq:rw
+    ports:
+      - '5672:5672'
+
+  redis:
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./.docker/redis/data:/data:rw
+
+  minio:
+    restart: unless-stopped
+    volumes:
+      - ./.docker/s3/data:/data:rw

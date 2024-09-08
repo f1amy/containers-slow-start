@@ -1,0 +1,419 @@
+services:
+  app:
+    env_file:
+      - .env
+    extra_hosts:
+      # Ensure that host.docker.internal is correctly defined on Linux
+      - host.docker.internal:host-gateway
+    networks:
+      - rabbitmq
+      - mysql
+      - mariadb
+      - redis
+      - service
+
+  app-events:
+    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume events.async -vv
+    env_file:
+      - .env
+    extra_hosts:
+      # Ensure that host.docker.internal is correctly defined on Linux
+      - host.docker.internal:host-gateway
+    networks:
+      - rabbitmq
+      - mysql
+      - mariadb
+      - redis
+      - service
+
+  sso-events:
+    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume sso.async -vv
+    env_file:
+      - .env
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - rabbitmq
+      - mysql
+      - mariadb
+      - redis
+      - service
+
+  caddy:
+    command: [ "caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch" ]
+    depends_on:
+      - app
+    environment:
+      SERVER_NAME: ${SERVER_NAME:-:80}
+    labels:
+      caddy: https://containers-long-startup.localhost
+      caddy.@backend.path_regexp: ^\/(api|bundles|_profiler|_wdt|_error)(\/.*)?$
+      caddy.reverse_proxy: '@backend {{upstreams http 80}}'
+    networks:
+      docker-proxy:
+      service:
+        aliases:
+          - containers-long-startup.test.local
+          - containers-long-startup.local
+
+  app-1:
+    env_file:
+      - .env
+    extra_hosts:
+      # Ensure that host.docker.internal is correctly defined on Linux
+      - host.docker.internal:host-gateway
+    networks:
+      - rabbitmq
+      - mysql
+      - mariadb
+      - redis
+      - service
+
+  app-events-1:
+    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume events.async -vv
+    env_file:
+      - .env
+    extra_hosts:
+      # Ensure that host.docker.internal is correctly defined on Linux
+      - host.docker.internal:host-gateway
+    networks:
+      - rabbitmq
+      - mysql
+      - mariadb
+      - redis
+      - service
+
+  sso-events-1:
+    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume sso.async -vv
+    env_file:
+      - .env
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - rabbitmq
+      - mysql
+      - mariadb
+      - redis
+      - service
+
+  caddy-1:
+    command: [ "caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch" ]
+    depends_on:
+      - app
+    environment:
+      SERVER_NAME: ${SERVER_NAME:-:80}
+    labels:
+      caddy: https://containers-long-startup.localhost
+      caddy.@backend.path_regexp: ^\/(api|bundles|_profiler|_wdt|_error)(\/.*)?$
+      caddy.reverse_proxy: '@backend {{upstreams http 80}}'
+    networks:
+      docker-proxy:
+      service:
+        aliases:
+          - containers-long-startup.test.local
+          - containers-long-startup.local
+
+#  app-2:
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      # Ensure that host.docker.internal is correctly defined on Linux
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  app-events-2:
+#    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume events.async -vv
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      # Ensure that host.docker.internal is correctly defined on Linux
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  sso-events-2:
+#    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume sso.async -vv
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  caddy-2:
+#    command: [ "caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch" ]
+#    depends_on:
+#      - app
+#    environment:
+#      SERVER_NAME: ${SERVER_NAME:-:80}
+#    labels:
+#      caddy: https://containers-long-startup.localhost
+#      caddy.@backend.path_regexp: ^\/(api|bundles|_profiler|_wdt|_error)(\/.*)?$
+#      caddy.reverse_proxy: '@backend {{upstreams http 80}}'
+#    networks:
+#      docker-proxy:
+#      service:
+#        aliases:
+#          - containers-long-startup.test.local
+#          - containers-long-startup.local
+#
+#  app-3:
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      # Ensure that host.docker.internal is correctly defined on Linux
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  app-events-3:
+#    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume events.async -vv
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      # Ensure that host.docker.internal is correctly defined on Linux
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  sso-events-3:
+#    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume sso.async -vv
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  caddy-3:
+#    command: [ "caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch" ]
+#    depends_on:
+#      - app
+#    environment:
+#      SERVER_NAME: ${SERVER_NAME:-:80}
+#    labels:
+#      caddy: https://containers-long-startup.localhost
+#      caddy.@backend.path_regexp: ^\/(api|bundles|_profiler|_wdt|_error)(\/.*)?$
+#      caddy.reverse_proxy: '@backend {{upstreams http 80}}'
+#    networks:
+#      docker-proxy:
+#      service:
+#        aliases:
+#          - containers-long-startup.test.local
+#          - containers-long-startup.local
+#
+#  app-4:
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      # Ensure that host.docker.internal is correctly defined on Linux
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  app-events-4:
+#    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume events.async -vv
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      # Ensure that host.docker.internal is correctly defined on Linux
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  sso-events-4:
+#    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume sso.async -vv
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  caddy-4:
+#    command: [ "caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch" ]
+#    depends_on:
+#      - app
+#    environment:
+#      SERVER_NAME: ${SERVER_NAME:-:80}
+#    labels:
+#      caddy: https://containers-long-startup.localhost
+#      caddy.@backend.path_regexp: ^\/(api|bundles|_profiler|_wdt|_error)(\/.*)?$
+#      caddy.reverse_proxy: '@backend {{upstreams http 80}}'
+#    networks:
+#      docker-proxy:
+#      service:
+#        aliases:
+#          - containers-long-startup.test.local
+#          - containers-long-startup.local
+#
+#  app-5:
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      # Ensure that host.docker.internal is correctly defined on Linux
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  app-events-5:
+#    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume events.async -vv
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      # Ensure that host.docker.internal is correctly defined on Linux
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  sso-events-5:
+#    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume sso.async -vv
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  caddy-5:
+#    command: [ "caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch" ]
+#    depends_on:
+#      - app
+#    environment:
+#      SERVER_NAME: ${SERVER_NAME:-:80}
+#    labels:
+#      caddy: https://containers-long-startup.localhost
+#      caddy.@backend.path_regexp: ^\/(api|bundles|_profiler|_wdt|_error)(\/.*)?$
+#      caddy.reverse_proxy: '@backend {{upstreams http 80}}'
+#    networks:
+#      docker-proxy:
+#      service:
+#        aliases:
+#          - containers-long-startup.test.local
+#          - containers-long-startup.local
+#
+#  app-6:
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      # Ensure that host.docker.internal is correctly defined on Linux
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  app-events-6:
+#    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume events.async -vv
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      # Ensure that host.docker.internal is correctly defined on Linux
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  sso-events-6:
+#    command: symfony run --watch=config,src,templates,vendor php bin/console messenger:consume sso.async -vv
+#    env_file:
+#      - .env
+#    extra_hosts:
+#      - host.docker.internal:host-gateway
+#    networks:
+#      - rabbitmq
+#      - mysql
+#      - mariadb
+#      - redis
+#      - service
+#
+#  caddy-6:
+#    command: [ "caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch" ]
+#    depends_on:
+#      - app
+#    environment:
+#      SERVER_NAME: ${SERVER_NAME:-:80}
+#    labels:
+#      caddy: https://containers-long-startup.localhost
+#      caddy.@backend.path_regexp: ^\/(api|bundles|_profiler|_wdt|_error)(\/.*)?$
+#      caddy.reverse_proxy: '@backend {{upstreams http 80}}'
+#    networks:
+#      docker-proxy:
+#      service:
+#        aliases:
+#          - containers-long-startup.test.local
+#          - containers-long-startup.local
+
+networks:
+  service:
+    name: containers-long-startup-core_service
+    external: true
+  mariadb:
+    name: containers-long-startup-core_mariadb
+    external: true
+  redis:
+    name: redis_redis
+    external: true
+  docker-proxy:
+    name: containers-long-startup-core_docker-proxy
+    external: true
+  rabbitmq:
+    name: rabbitmq_rabbitmq
+    external: true
+  mysql:
+    name: mysql_mysql
+    external: true

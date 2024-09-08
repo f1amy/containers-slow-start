@@ -1,0 +1,271 @@
+services:
+  app:
+    build:
+      context: .docker/php
+      target: app_php
+    restart: unless-stopped
+    volumes:
+      - php_socket:/var/run/php
+      - ./:/srv/app
+      - $HOME/.ssh:/home/dev-user/.ssh
+
+  app-events:
+    build:
+      context: .docker/php
+      target: app_php
+    restart: unless-stopped
+    volumes:
+      - ./:/srv/app
+
+  sso-events:
+    build:
+      context: .docker/php
+      target: app_php
+    restart: unless-stopped
+    volumes:
+      - ./:/srv/app
+
+  caddy:
+    build:
+      context: .docker/caddy
+      target: app_caddy
+    restart: unless-stopped
+    volumes:
+      - php_socket:/var/run/php
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./public:/srv/app/public:ro
+      - ./.docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+
+  app-1:
+    build:
+      context: .docker/php
+      target: app_php
+    restart: unless-stopped
+    volumes:
+      - php_socket:/var/run/php
+      - ./:/srv/app
+      - $HOME/.ssh:/home/dev-user/.ssh
+
+  app-events-1:
+    build:
+      context: .docker/php
+      target: app_php
+    restart: unless-stopped
+    volumes:
+      - ./:/srv/app
+
+  sso-events-1:
+    build:
+      context: .docker/php
+      target: app_php
+    restart: unless-stopped
+    volumes:
+      - ./:/srv/app
+
+  caddy-1:
+    build:
+      context: .docker/caddy
+      target: app_caddy
+    restart: unless-stopped
+    volumes:
+      - php_socket:/var/run/php
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./public:/srv/app/public:ro
+      - ./.docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+
+#  app-2:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - php_socket:/var/run/php
+#      - ./:/srv/app
+#      - $HOME/.ssh:/home/dev-user/.ssh
+#
+#  app-events-2:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - ./:/srv/app
+#
+#  sso-events-2:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - ./:/srv/app
+#
+#  caddy-2:
+#    build:
+#      context: .docker/caddy
+#      target: app_caddy
+#    restart: unless-stopped
+#    volumes:
+#      - php_socket:/var/run/php
+#      - caddy_data:/data
+#      - caddy_config:/config
+#      - ./public:/srv/app/public:ro
+#      - ./.docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+#
+#  app-3:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - php_socket:/var/run/php
+#      - ./:/srv/app
+#      - $HOME/.ssh:/home/dev-user/.ssh
+#
+#  app-events-3:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - ./:/srv/app
+#
+#  sso-events-3:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - ./:/srv/app
+#
+#  caddy-3:
+#    build:
+#      context: .docker/caddy
+#      target: app_caddy
+#    restart: unless-stopped
+#    volumes:
+#      - php_socket:/var/run/php
+#      - caddy_data:/data
+#      - caddy_config:/config
+#      - ./public:/srv/app/public:ro
+#      - ./.docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+#
+#  app-4:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - php_socket:/var/run/php
+#      - ./:/srv/app
+#      - $HOME/.ssh:/home/dev-user/.ssh
+#
+#  app-events-4:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - ./:/srv/app
+#
+#  sso-events-4:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - ./:/srv/app
+#
+#  caddy-4:
+#    build:
+#      context: .docker/caddy
+#      target: app_caddy
+#    restart: unless-stopped
+#    volumes:
+#      - php_socket:/var/run/php
+#      - caddy_data:/data
+#      - caddy_config:/config
+#      - ./public:/srv/app/public:ro
+#      - ./.docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+#
+#  app-5:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - php_socket:/var/run/php
+#      - ./:/srv/app
+#      - $HOME/.ssh:/home/dev-user/.ssh
+#
+#  app-events-5:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - ./:/srv/app
+#
+#  sso-events-5:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - ./:/srv/app
+#
+#  caddy-5:
+#    build:
+#      context: .docker/caddy
+#      target: app_caddy
+#    restart: unless-stopped
+#    volumes:
+#      - php_socket:/var/run/php
+#      - caddy_data:/data
+#      - caddy_config:/config
+#      - ./public:/srv/app/public:ro
+#      - ./.docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+#
+#  app-6:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - php_socket:/var/run/php
+#      - ./:/srv/app
+#      - $HOME/.ssh:/home/dev-user/.ssh
+#
+#  app-events-6:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - ./:/srv/app
+#
+#  sso-events-6:
+#    build:
+#      context: .docker/php
+#      target: app_php
+#    restart: unless-stopped
+#    volumes:
+#      - ./:/srv/app
+#
+#  caddy-6:
+#    build:
+#      context: .docker/caddy
+#      target: app_caddy
+#    restart: unless-stopped
+#    volumes:
+#      - php_socket:/var/run/php
+#      - caddy_data:/data
+#      - caddy_config:/config
+#      - ./public:/srv/app/public:ro
+#      - ./.docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+
+volumes:
+  php_socket:
+  caddy_data:
+  caddy_config:
